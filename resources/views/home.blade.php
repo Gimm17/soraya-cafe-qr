@@ -176,7 +176,7 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <a href="{{ auth()->guard('admin')->check() ? route('admin.dashboard') : route('admin.login') }}" class="ui-btn tap-44 inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#1E3A8A] text-white font-semibold text-sm hover:bg-[#1E40AF] transition-colors">
+                <a href="{{ (auth()->check() && auth()->user()->is_admin) ? route('admin.dashboard') : route('admin.login') }}" class="ui-btn tap-44 inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#1E3A8A] text-white font-semibold text-sm hover:bg-[#1E40AF] transition-colors">
                     Admin
                 </a>
             </div>
