@@ -34,6 +34,8 @@ class AdminSettingController extends Controller
             'receiptLogoSpacing'    => Setting::getValue('receipt_logo_spacing', '10'),
 
             // Identitas
+            'receiptCafeName'       => Setting::getValue('receipt_cafe_name'),
+            'receiptCafeTagline'    => Setting::getValue('receipt_cafe_tagline'),
             'receiptCafeLocation'   => Setting::getValue('receipt_cafe_location'),
             'receiptWhatsapp'       => Setting::getValue('receipt_whatsapp'),
             'receiptShowTagline'    => Setting::getValue('receipt_show_tagline', '1'),
@@ -133,6 +135,8 @@ class AdminSettingController extends Controller
         Setting::setValue('receipt_show_logo',           $request->boolean('receipt_show_logo') ? '1' : '0');
         Setting::setValue('receipt_logo_size',            $request->input('receipt_logo_size', '64'));
         Setting::setValue('receipt_logo_spacing',         $request->input('receipt_logo_spacing', '10'));
+        Setting::setValue('receipt_cafe_name',           $request->input('receipt_cafe_name'));
+        Setting::setValue('receipt_cafe_tagline',         $request->input('receipt_cafe_tagline'));
         Setting::setValue('receipt_cafe_location',        $request->input('receipt_cafe_location'));
         Setting::setValue('receipt_whatsapp',             $request->input('receipt_whatsapp'));
         Setting::setValue('receipt_show_tagline',         $request->boolean('receipt_show_tagline') ? '1' : '0');

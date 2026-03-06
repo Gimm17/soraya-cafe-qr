@@ -211,6 +211,22 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Nama Cafe di Struk</label>
+                            <input type="text" name="receipt_cafe_name" value="{{ $receiptCafeName ?? '' }}" maxlength="80"
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Kosongkan = pakai nama global">
+
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Tagline di Struk</label>
+                            <input type="text" name="receipt_cafe_tagline" value="{{ $receiptCafeTagline ?? '' }}" maxlength="100"
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Kosongkan = pakai tagline global">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">WhatsApp Cafe</label>
                             <input type="text" name="receipt_whatsapp" value="{{ $receiptWhatsapp ?? '' }}" maxlength="20"
                                 class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"

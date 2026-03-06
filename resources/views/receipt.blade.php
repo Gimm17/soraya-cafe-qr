@@ -164,9 +164,9 @@
             <img src="{{ $receiptLogoUrl }}" alt="Logo" class="receipt-logo"
                  style="width:{{ $logoSize }}px;height:{{ $logoSize }}px;margin-bottom:{{ $logoSpacing }}px;{{ $theme === 'bw' ? 'filter:grayscale(1);' : '' }}">
         @endif
-        <div class="cafe-name">{{ $cafeName }}</div>
+        <div class="cafe-name">{{ $receiptCafeName ?? $cafeName }}</div>
         @if(($receiptShowTagline ?? '1') === '1')
-        <div class="cafe-tagline">{{ $cafeTagline }}</div>
+        <div class="cafe-tagline">{{ $receiptCafeTagline ?? $cafeTagline }}</div>
         @endif
         <div class="order-code">{{ $order->order_code }}</div>
         <div class="order-date">{{ $order->created_at->format('d M Y, H:i') }}</div>

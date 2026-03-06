@@ -52,6 +52,8 @@ class OrderController extends Controller
             'receiptLogoSize'       => Setting::getValue('receipt_logo_size', '64'),
             'receiptLogoSpacing'    => Setting::getValue('receipt_logo_spacing', '10'),
             'receiptLocation'       => Setting::getValue('receipt_cafe_location'),
+            'receiptCafeName'       => Setting::getValue('receipt_cafe_name') ?: Setting::getValue('cafe_name', 'Soraya Cafe'),
+            'receiptCafeTagline'    => Setting::getValue('receipt_cafe_tagline') ?: Setting::getValue('cafe_tagline', ''),
             'receiptWhatsapp'       => Setting::getValue('receipt_whatsapp'),
             'receiptShowTagline'    => Setting::getValue('receipt_show_tagline', '1'),
             'receiptFontFamily'     => Setting::getValue('receipt_font_family', 'system'),
