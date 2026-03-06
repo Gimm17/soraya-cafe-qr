@@ -116,16 +116,14 @@
             </div>
         </div>
 
-        <!-- Download Struk Button -->
-        @if($order->order_status === 'SELESAI' && $order->payment_status === 'PAID')
-        <div class="mb-4" id="downloadReceiptSection">
+        <!-- Download Struk Button — always in DOM, shown when SELESAI -->
+        <div class="mb-4" id="downloadReceiptSection" style="{{ ($order->order_status === 'SELESAI' && $order->payment_status === 'PAID') ? '' : 'display:none;' }}">
             <button onclick="openReceiptModal()"
                class="w-full flex items-center justify-center gap-2 tap-44 px-5 py-3 bg-primary-600 text-white font-semibold ui-btn hover:bg-primary-700 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 📥 Lihat Struk
             </button>
         </div>
-        @endif
 
         <!-- Product Reviews -->
         <div class="ui-card overflow-hidden mb-6" id="reviewSection" style="{{ $order->order_status !== 'SELESAI' ? 'display:none;' : '' }}">
@@ -311,8 +309,12 @@
                         });
                     }
 
-                    // Check for status change to SELESAI — reveal review form
+                    // Check for status change to SELESAI — reveal review form + Lihat Struk button
                     if (data.order_status === 'SELESAI' && lastStatus !== 'SELESAI') {
+                        // Show Lihat Struk button
+                        const receiptBtn = document.getElementById('downloadReceiptSection');
+                        if (receiptBtn) receiptBtn.style.display = '';
+
                         const reviewEl = document.getElementById('reviewSection');
                         if (reviewEl) {
                             reviewEl.style.display = '';
@@ -362,7 +364,6 @@
         bindStarRatings();
     </script>
 
-    @if($order->order_status === 'SELESAI' && $order->payment_status === 'PAID')
     <script>
     function openReceiptModal() {
         const modal = document.getElementById('receiptModal');
@@ -392,11 +393,9 @@
         document.getElementById('receiptIframe').contentWindow.print();
     }
     </script>
-    @endif
     </x-slot:scripts>
 
     {{-- Receipt Modal --}}
-    @if($order->order_status === 'SELESAI' && $order->payment_status === 'PAID')
     <div id="receiptModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)closeReceiptModal()">
         <style>
             #receiptModal { background:rgba(0,0,0,0); transition:background .25s; }
@@ -418,5 +417,4 @@
             </div>
         </div>
     </div>
-    @endif
 </x-cafe-layout>
