@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Nindito Coffee &amp; Friends</title>
+    <title>SORAYA Coffee | QR Ordering</title>
 
     @include('partials.brand-head')
 
     <style>
-        .noise{ background-image: radial-gradient(rgba(4,3,96,.07) 1px, transparent 1px); background-size: 18px 18px; }
+        .noise{ background-image: radial-gradient(rgba(30,58,138,.05) 1px, transparent 1px); background-size: 18px 18px; }
 
         /* ── Animations ── */
         @keyframes fadeInUp {
@@ -69,13 +69,15 @@
             opacity: 1;
         }
 
-        /* Category chip hover */
         .cat-chip {
             transition: all .25s ease;
+            border: 2px solid rgba(30,58,138,.15);
+            color: #1E3A8A;
         }
-        .cat-chip:hover {
-            background: rgba(35,74,230,.08);
-            border-color: rgba(35,74,230,.3);
+        .cat-chip.active, .cat-chip:hover {
+            background: #1E3A8A;
+            border-color: #1E3A8A;
+            color: #ffffff;
             transform: translateY(-2px);
         }
 
@@ -163,18 +165,18 @@
 <body class="bg-bone text-ink min-h-screen">
 
     <!-- Topbar -->
-    <header class="sticky top-0 z-40 border-b border-line bg-bone/80 backdrop-blur">
+    <header class="sticky top-0 z-40 border-b border-gray-100 bg-white shadow-sm">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <img src="/assets/brand/logo.webp" alt="Nindito" class="w-10 h-10 rounded-full ring-1 ring-line shadow-soft2" loading="eager">
+            <div class="flex items-center gap-2.5">
+                <img src="/assets/brand/logo.webp" alt="SORAYA" class="w-9 h-9 rounded-full shadow-soft2" loading="eager">
                 <div class="leading-tight">
-                    <p class="text-sm font-semibold tracking-tight">Nindito</p>
+                    <p class="text-sm font-bold tracking-tight text-[#1E3A8A]">Soraya</p>
                     <p class="text-xs text-muted">Coffee &amp; Friends</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
-                <a href="{{ route('admin.login') }}" class="ui-btn tap-44 inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white border border-line text-gray-800 font-semibold hover:bg-gray-50 transition-colors">
+                <a href="{{ route('admin.login') }}" class="ui-btn tap-44 inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#1E3A8A] text-white font-semibold text-sm hover:bg-[#1E40AF] transition-colors">
                     Admin
                 </a>
             </div>
@@ -220,9 +222,15 @@
 
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
 
-                    <div class="absolute bottom-5 left-5 right-5 text-white">
-                        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Pesan cepat lewat QR</h1>
-                        <p class="mt-1 text-sm text-white/85 hero-shimmer">Scan QR di meja, pilih menu, dan kami antar ke meja kamu.</p>
+                    <div class="absolute bottom-0 left-0 right-0 p-5 text-white">
+                        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Selamat datang<br>di Soraya ☕</h1>
+                        <p class="mt-1.5 text-sm text-white/85">Pesan dan nikmati kopi terbaik kami dari HP.</p>
+                        <div class="mt-4">
+                            <a href="#menu" class="inline-flex items-center gap-2 bg-white text-[#1E3A8A] font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-blue-50 transition-colors shadow-lg">
+                                Mulai Pesan
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -262,9 +270,9 @@
                 <h2 class="text-lg font-semibold tracking-tight">Kategori</h2>
                 <span class="text-xs text-muted">Preview</span>
             </div>
-            <div class="mt-3 flex gap-2 overflow-x-auto pb-2">
+            <div class="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                 @foreach($categories as $idx => $cat)
-                    <span class="cat-chip ui-chip px-4 py-2 text-xs font-semibold text-gray-800 whitespace-nowrap cursor-default">{{ $cat->name }}</span>
+                    <span class="cat-chip px-4 py-2 text-xs font-bold rounded-full whitespace-nowrap cursor-default">{{ $cat->name }}</span>
                 @endforeach
             </div>
         </section>
@@ -272,7 +280,7 @@
 
         <!-- Best Sellers -->
         @if(isset($bestSellers) && $bestSellers->count())
-        <section class="max-w-6xl mx-auto px-4 py-6 reveal">
+        <section id="menu" class="max-w-6xl mx-auto px-4 py-6 reveal">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2">
                     <span class="text-2xl">🔥</span>
@@ -316,7 +324,7 @@
                                 <span class="text-[10px] text-muted">({{ $p->reviews_count }})</span>
                             </div>
                             @endif
-                            <p class="mt-1 text-sm font-extrabold text-primary-700">{{ $p->price_rupiah }}</p>
+                             <p class="mt-1 text-sm font-extrabold text-[#1E3A8A]">{{ $p->price_rupiah }}</p>
                         </div>
                     </div>
                 @endforeach
@@ -374,7 +382,7 @@
                                 <span class="text-[10px] text-muted">({{ $p->reviews_count }})</span>
                             </div>
                             @endif
-                            <p class="mt-1 text-sm font-extrabold text-primary-700">{{ $p->price_rupiah }}</p>
+                            <p class="mt-1 text-sm font-extrabold text-[#1E3A8A]">{{ $p->price_rupiah }}</p>
                         </div>
                     </div>
                 @endforeach
@@ -383,11 +391,11 @@
         @endif
 
         <!-- Footer -->
-        <footer class="border-t border-line bg-gradient-to-b from-white/60 to-white/90">
-            <div class="max-w-6xl mx-auto px-4 py-10">
+        <footer class="border-t border-gray-100 bg-white">
+            <div class="max-w-6xl mx-auto px-4 py-8">
                 <div class="flex flex-col items-center text-center gap-3">
-                    <img src="/assets/brand/logo.webp" alt="Nindito" class="w-12 h-12 rounded-full ring-1 ring-line shadow-soft2">
-                    <p class="text-sm font-bold tracking-tight">Nindito Coffee &amp; Friends</p>
+                    <img src="/assets/brand/logo.webp" alt="SORAYA" class="w-11 h-11 rounded-full shadow-soft2">
+                    <p class="text-sm font-bold tracking-tight text-[#1E3A8A]">Soraya Coffee &amp; Friends</p>
                     <p class="text-xs text-muted">Powered by QR Ordering • {{ date('Y') }}</p>
                 </div>
             </div>

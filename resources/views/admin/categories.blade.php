@@ -1,36 +1,45 @@
 <x-admin-layout title="Kategori">
-    <div class="mb-6">
-        <p class="text-sm text-muted">Kelola kategori menu untuk memudahkan pelanggan mencari produk.</p>
+    <div class="admin-page-header">
+        <h1>Kategori</h1>
+        <p>Kelola kategori menu untuk memudahkan pelanggan mencari produk.</p>
     </div>
 
-    <!-- Add Category -->
-    <div class="ui-card p-5 mb-6">
-        <h2 class="font-semibold tracking-tight mb-4">Tambah kategori</h2>
-        <form method="POST" action="{{ route('admin.categories.store') }}" class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            @csrf
-            <input class="tap-44 rounded-2xl border border-line px-4 py-3 bg-white ui-focus" name="name" placeholder="Nama kategori" required>
-            <input class="tap-44 rounded-2xl border border-line px-4 py-3 bg-white ui-focus" type="number" name="sort_order" placeholder="Sort (0.. )" value="0">
-            <button class="tap-44 rounded-2xl bg-primary-600 hover:bg-primary-700 text-white px-5 py-3 font-semibold transition-colors">Tambah</button>
-        </form>
+    {{-- Add Category --}}
+    <div class="section-card mb-6">
+        <div class="section-card-header">
+            <div>
+                <h3>Tambah Kategori</h3>
+            </div>
+        </div>
+        <div class="section-card-body">
+            <form method="POST" action="{{ route('admin.categories.store') }}" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                @csrf
+                <input class="admin-select" name="name" placeholder="Nama kategori" required>
+                <input class="admin-select" type="number" name="sort_order" placeholder="Sort (0...)" value="0">
+                <button type="submit" class="btn-primary tap-44 justify-center">Tambah</button>
+            </form>
+        </div>
     </div>
 
-    <!-- List -->
-    <div class="ui-card overflow-hidden">
-        <div class="p-5 border-b ui-divider">
-            <h2 class="font-semibold tracking-tight">Daftar kategori</h2>
+    {{-- List --}}
+    <div class="section-card overflow-hidden">
+        <div class="section-card-header">
+            <div>
+                <h3>Daftar Kategori</h3>
+            </div>
         </div>
 
-        <!-- Desktop table -->
+        {{-- Desktop table --}}
         <div class="hidden md:block">
-            <table class="w-full text-sm">
-                <thead class="text-muted">
+            <table class="admin-table">
+                <thead>
                     <tr>
-                        <th class="text-left py-3 px-5">Nama</th>
-                        <th class="text-left py-3 px-5">Sort</th>
-                        <th class="text-right py-3 px-5">Aksi</th>
+                        <th>Nama</th>
+                        <th>Sort</th>
+                        <th style="text-align:right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y ui-divider">
+                <tbody>
                     @foreach($categories as $c)
                         <tr class="hover:bg-gray-50">
                             <td class="py-3 px-5 font-semibold text-gray-900">{{ $c->name }}</td>

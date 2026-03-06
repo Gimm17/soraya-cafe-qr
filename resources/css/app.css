@@ -14,22 +14,30 @@
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-poppins: 'Poppins', sans-serif;
 
-    /* Primary (emerald-based) */
-    --color-primary-50: #ecfdf5;
-    --color-primary-100: #d1fae5;
-    --color-primary-200: #a7f3d0;
-    --color-primary-300: #6ee7b7;
-    --color-primary-400: #34d399;
-    --color-primary-500: #10b981;
-    --color-primary-600: #059669;
-    --color-primary-700: #047857;
-    --color-primary-800: #065f46;
-    --color-primary-900: #064e3b;
+    /* SORAYA Brand Colors - Royal Blue Theme */
+    --color-soraya-blue: #4169E1;
+    --color-soraya-dark: #1E3A8A;
+    --color-soraya-light: #93C5FD;
+    --color-soraya-bg: #F8FAFC;
+    --color-soraya-text: #0F172A;
+    --color-soraya-muted: #64748B;
 
-    /* Cafe dark theme */
+    /* Primary (Soraya Blue-based) */
+    --color-primary-50: #EFF6FF;
+    --color-primary-100: #DBEAFE;
+    --color-primary-200: #BFDBFE;
+    --color-primary-300: #93C5FD;
+    --color-primary-400: #60A5FA;
+    --color-primary-500: #4169E1;      /* Soraya Blue */
+    --color-primary-600: #1E3A8A;      /* Soraya Dark Blue */
+    --color-primary-700: #1E40AF;
+    --color-primary-800: #1E3A8A;
+    --color-primary-900: #1E3A8A;
+
+    /* Cafe dark theme - updated to Soraya Blue */
     --color-cafe-dark: #1a1a2e;
     --color-cafe-darker: #16162a;
-    --color-cafe-accent: #0f3460;
+    --color-cafe-accent: #1E3A8A;      /* Soraya Dark Blue */
     --color-cafe-gold: #e94560;
 
     /* Dark shades (home page) */
@@ -65,15 +73,15 @@
     background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
 }
 .btn-glow {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 20px rgba(30,58,138, 0.4);
 }
 .btn-glow:hover {
-    box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+    box-shadow: 0 0 30px rgba(30,58,138, 0.6);
 }
 
 /* Home page */
 .hero-gradient {
-    background: linear-gradient(135deg, #166534 0%, #14532d 50%, #0f172a 100%);
+    background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 50%, #0f172a 100%);
 }
 .card-hover {
     transition: all 0.3s ease;
@@ -105,9 +113,9 @@
 
 /* Admin sidebar */
 .sidebar-link.active {
-    background-color: rgba(16, 185, 129, 0.1);
-    color: #059669;
-    border-left-color: #059669;
+    background-color: rgba(255,255,255,.18);
+    color: #ffffff;
+    border-left-color: #60A5FA;
 }
 
 /* Table landing */

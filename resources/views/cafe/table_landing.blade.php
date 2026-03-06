@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nindito - Meja {{ str_pad($tableNo, 2, '0', STR_PAD_LEFT) }}</title>
+    <title>SORAYA - Meja {{ str_pad($tableNo, 2, '0', STR_PAD_LEFT) }}</title>
 
     @include('partials.brand-head')
 
@@ -19,14 +19,14 @@
             <div class="ui-card overflow-hidden">
                 <!-- Hero image -->
                 <div class="relative h-44">
-                    <img src="/assets/brand/hero-front.webp" alt="Nindito" class="absolute inset-0 w-full h-full object-cover" loading="eager">
+                    <img src="/assets/brand/hero-front.webp" alt="SORAYA" class="absolute inset-0 w-full h-full object-cover" loading="eager">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/30 to-transparent"></div>
 
                     <div class="absolute top-4 left-4 flex items-center gap-3">
-                        <img src="/assets/brand/logo.webp" alt="Nindito" class="w-12 h-12 rounded-full ring-2 ring-white/50 shadow-soft2" loading="eager">
+                        <img src="/assets/brand/logo.webp" alt="SORAYA" class="w-12 h-12 rounded-full ring-2 ring-white/50 shadow-soft2" loading="eager">
                         <div class="text-white leading-tight">
-                            <p class="text-sm font-semibold tracking-tight">Nindito</p>
-                            <p class="text-xs text-white/80">Coffee &amp; Friends</p>
+                            <p class="text-sm font-semibold tracking-tight">SORAYA</p>
+                            <p class="text-xs text-white/80">Coffeeshop</p>
                         </div>
                     </div>
 

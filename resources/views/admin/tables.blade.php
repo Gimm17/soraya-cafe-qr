@@ -1,17 +1,22 @@
 <x-admin-layout title="Meja & QR">
-    <div class="mb-6">
-        <p class="text-sm text-muted">Kelola nomor meja dan QR code untuk akses menu per meja.</p>
+    <div class="admin-page-header">
+        <h1>Table &amp; QR Management</h1>
+        <p>Kelola nomor meja dan QR code untuk akses menu per meja.</p>
     </div>
 
-    <!-- Add Table -->
-    <div class="ui-card p-5 mb-6">
-        <h2 class="font-semibold tracking-tight mb-4">Tambah meja</h2>
-        <form method="POST" action="{{ route('admin.tables.store') }}" class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            @csrf
-            <input class="tap-44 rounded-2xl border border-line px-4 py-3 bg-white ui-focus" type="number" name="table_no" placeholder="No meja" required>
-            <input class="tap-44 rounded-2xl border border-line px-4 py-3 bg-white ui-focus" name="name" placeholder="Nama (opsional)">
-            <button class="tap-44 rounded-2xl bg-primary-600 hover:bg-primary-700 text-white px-5 py-3 font-semibold transition-colors">Tambah</button>
-        </form>
+    {{-- Add Table --}}
+    <div class="section-card mb-6">
+        <div class="section-card-header">
+            <div><h3>Tambah Meja</h3></div>
+        </div>
+        <div class="section-card-body">
+            <form method="POST" action="{{ route('admin.tables.store') }}" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                @csrf
+                <input class="admin-select" type="number" name="table_no" placeholder="No meja" required>
+                <input class="admin-select" name="name" placeholder="Nama (opsional)">
+                <button type="submit" class="btn-primary tap-44 justify-center">Tambah</button>
+            </form>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -56,16 +61,16 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 mb-3">
-                        <a href="{{ route('admin.tables.qr.download', ['table' => $t, 'format' => 'png']) }}" class="tap-44 py-2.5 px-3 bg-primary-600 text-white rounded-xl text-sm font-semibold hover:bg-primary-700 transition-colors text-center">
+                        <a href="{{ route('admin.tables.qr.download', ['table' => $t, 'format' => 'png']) }}" class="btn-primary tap-44 py-2 px-3 text-sm justify-center">
                             Download PNG
                         </a>
-                        <a href="{{ route('admin.tables.qr.download', ['table' => $t, 'format' => 'pdf']) }}" class="tap-44 py-2.5 px-3 bg-white border border-line text-gray-800 rounded-xl text-sm font-semibold hover:bg-gray-50 transition-colors text-center">
+                        <a href="{{ route('admin.tables.qr.download', ['table' => $t, 'format' => 'pdf']) }}" class="btn-secondary tap-44 py-2 px-3 text-sm text-center flex items-center justify-center">
                             Download PDF
                         </a>
                     </div>
 
                     <form id="rotate-form-{{ $t->id }}" class="hidden" method="POST" action="{{ route('admin.tables.rotate', $t) }}">@csrf</form>
-                    <button type="button" onclick="confirmRotateToken('rotate-form-{{ $t->id }}', '{{ $t->table_no }}')" class="w-full tap-44 py-3 bg-gray-900 text-white rounded-xl text-sm font-semibold hover:bg-black transition-colors">
+                    <button type="button" onclick="confirmRotateToken('rotate-form-{{ $t->id }}', '{{ $t->table_no }}')" class="w-full tap-44 py-2.5 btn-secondary text-sm font-semibold">
                         Rotate Token
                     </button>
                 </div>

@@ -1,8 +1,14 @@
 <x-admin-layout title="Orders">
-    <!-- Filters -->
-    <div class="ui-card p-4 mb-6">
+    {{-- Page Header --}}
+    <div class="admin-page-header">
+        <h1>Orders Management</h1>
+        <p>Kelola order, menu, dan laporan</p>
+    </div>
+
+    {{-- Filters --}}
+    <div class="section-card p-4 mb-6">
         <form action="{{ route('admin.orders') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <select name="status" class="tap-44 px-4 py-3 rounded-2xl border border-line bg-white ui-focus">
+            <select name="status" class="admin-select">
                 <option value="">Semua Status</option>
                 <option value="DITERIMA" {{ request('status') == 'DITERIMA' ? 'selected' : '' }}>Diterima</option>
                 <option value="DIPROSES" {{ request('status') == 'DIPROSES' ? 'selected' : '' }}>Diproses</option>
@@ -10,68 +16,61 @@
                 <option value="SELESAI" {{ request('status') == 'SELESAI' ? 'selected' : '' }}>Selesai</option>
             </select>
 
-            <select name="payment" class="tap-44 px-4 py-3 rounded-2xl border border-line bg-white ui-focus">
+            <select name="payment" class="admin-select">
                 <option value="">Semua Pembayaran</option>
                 <option value="PAID" {{ request('payment') == 'PAID' ? 'selected' : '' }}>Sudah Bayar</option>
                 <option value="UNPAID" {{ request('payment') == 'UNPAID' ? 'selected' : '' }}>Belum Bayar</option>
             </select>
 
-            <select name="fulfillment" class="tap-44 px-4 py-3 rounded-2xl border border-line bg-white ui-focus">
+            <select name="fulfillment" class="admin-select">
                 <option value="">Semua Tipe</option>
                 <option value="DINE_IN" {{ request('fulfillment') == 'DINE_IN' ? 'selected' : '' }}>Dine In</option>
                 <option value="PICKUP" {{ request('fulfillment') == 'PICKUP' ? 'selected' : '' }}>Pickup</option>
             </select>
 
             <div class="flex gap-2">
-                <button type="submit" class="flex-1 tap-44 px-5 py-3 bg-primary-600 text-white font-semibold ui-btn hover:bg-primary-700 transition-colors">Filter</button>
+                <button type="submit" class="btn-primary flex-1 justify-center tap-44">Filter</button>
                 @if(request()->hasAny(['status', 'payment', 'fulfillment']))
-                    <a href="{{ route('admin.orders') }}" class="flex-1 tap-44 px-5 py-3 bg-white border border-line text-gray-800 font-semibold ui-btn hover:bg-gray-50 transition-colors text-center">Reset</a>
+                    <a href="{{ route('admin.orders') }}" class="btn-secondary flex-1 text-center tap-44 flex items-center justify-center">Reset</a>
                 @endif
             </div>
         </form>
     </div>
 
-    <!-- Kanban Board -->
+    {{-- Kanban Board --}}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         @php
             $statusLabels = [
-                'DITERIMA' => ['label' => 'Diterima', 'tint' => 'primary', 'pill' => 'text-primary-800'],
-                'DIPROSES' => ['label' => 'Diproses', 'tint' => 'amber', 'pill' => 'text-amber-800'],
-                'READY' => ['label' => 'Ready', 'tint' => 'green', 'pill' => 'text-green-800'],
-                'SELESAI' => ['label' => 'Selesai', 'tint' => 'gray', 'pill' => 'text-gray-700'],
+                'DITERIMA' => ['label' => 'Diterima'],
+                'DIPROSES' => ['label' => 'Diproses'],
+                'READY'    => ['label' => 'Ready'],
+                'SELESAI'  => ['label' => 'Selesai'],
             ];
         @endphp
 
         @foreach($statusLabels as $status => $config)
-        <section class="ui-card overflow-hidden">
-            <div class="p-4 border-b ui-divider bg-{{ $config['tint'] }}-50/60">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-semibold tracking-tight {{ $config['pill'] }}">{{ $config['label'] }}</h3>
-                    <span class="ui-chip px-3 py-1 text-xs font-bold {{ $config['pill'] }}">
-                        {{ $orders->where('order_status', $status)->count() }}
-                    </span>
-                </div>
+        <section class="kanban-col">
+            {{-- Blue header for every column --}}
+            <div class="kanban-header">
+                <span>{{ $config['label'] }}</span>
+                <span class="kanban-count">{{ $orders->where('order_status', $status)->count() }}</span>
             </div>
 
             <div class="p-3 space-y-3">
                 @foreach($orders->where('order_status', $status) as $order)
                 <div class="ui-card-flat p-4 hover:shadow-soft transition-shadow cursor-pointer" onclick="window.location='{{ route('admin.orders.show', $order) }}'">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="font-bold text-gray-900">{{ $order->order_code }}</span>
-                        <span class="text-[11px] px-3 py-1 rounded-full font-bold ui-chip
-                            {{ $order->payment_status === 'PAID' ? 'text-green-700' : ($order->payment_status === 'EXPIRED' || $order->created_at->diffInMinutes(now()) >= 10 ? 'text-gray-600' : 'text-red-700') }}">
-                            @if($order->payment_status === 'PAID')
-                                ✓ Paid
-                            @elseif($order->payment_status === 'EXPIRED' || $order->created_at->diffInMinutes(now()) >= 10)
-                                Expired
-                            @else
-                                Unpaid
+                        <span class="font-bold text-gray-900 text-sm">{{ $order->order_code }}</span>
+                        <span class="badge {{ $order->payment_status === 'PAID' ? 'badge-green' : ($order->payment_status === 'EXPIRED' || $order->created_at->diffInMinutes(now()) >= 10 ? 'badge-gray' : 'badge-red') }}">
+                            @if($order->payment_status === 'PAID') ✓ Paid
+                            @elseif($order->payment_status === 'EXPIRED' || $order->created_at->diffInMinutes(now()) >= 10) Expired
+                            @else Unpaid
                             @endif
                         </span>
                     </div>
 
                     <div class="mb-2">
-                        <p class="text-sm text-gray-900 font-medium">{{ $order->customer_name }}</p>
+                        <p class="text-sm text-gray-900 font-semibold">{{ $order->customer_name }}</p>
                         <p class="text-xs text-muted">
                             @if($order->fulfillment_type === 'DINE_IN')
                                 🪑 Meja {{ $order->table->table_no ?? '-' }}
@@ -92,15 +91,15 @@
                     </div>
                     @endif
 
-                    <!-- Quick Status Update -->
+                    {{-- Quick Status Update --}}
                     @if($status !== 'SELESAI')
                     <div class="mt-3 flex gap-2" onclick="event.stopPropagation()">
                         @php
                             $nextStatus = match($status) {
-                                'DITERIMA' => null, // otomatis via webhook ketika PAID
+                                'DITERIMA' => null,
                                 'DIPROSES' => 'READY',
-                                'READY' => 'SELESAI',
-                                default => null
+                                'READY'    => 'SELESAI',
+                                default    => null
                             };
                         @endphp
 
@@ -108,7 +107,7 @@
                         <form action="{{ route('admin.orders.status', $order) }}" method="POST" class="flex-1">
                             @csrf
                             <input type="hidden" name="status" value="{{ $nextStatus }}">
-                            <button type="submit" class="w-full tap-44 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-semibold hover:bg-primary-700 transition-colors">
+                            <button type="submit" class="w-full tap-44 py-2 btn-primary text-sm justify-center">
                                 → {{ $statusLabels[$nextStatus]['label'] }}
                             </button>
                         </form>
@@ -119,7 +118,7 @@
                                 @csrf
                                 @method('DELETE')
                             </form>
-                            <button type="button" onclick="confirmDelete('delete-order-{{ $order->id }}', 'pesanan {{ $order->order_code }}')" class="tap-44 px-3 py-2.5 bg-white border border-line text-red-600 rounded-xl text-sm font-bold hover:bg-red-50 transition-colors" title="Hapus Pesanan">
+                            <button type="button" onclick="confirmDelete('delete-order-{{ $order->id }}', 'pesanan {{ $order->order_code }}')" class="tap-44 px-3 py-2 bg-white border border-line text-red-600 rounded-xl text-sm hover:bg-red-50 transition-colors" title="Hapus Pesanan">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                             </button>
                         @endif
@@ -129,11 +128,11 @@
                 @endforeach
 
                 @if($orders->where('order_status', $status)->isEmpty())
-                <div class="text-center py-8 text-muted">
-                    <svg class="w-8 h-8 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                <div class="text-center py-10 text-muted">
+                    <svg class="w-12 h-12 mx-auto mb-3 opacity-25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                     </svg>
-                    <p class="text-sm">Tidak ada</p>
+                    <p class="text-sm font-medium">Tidak ada</p>
                 </div>
                 @endif
             </div>
@@ -173,7 +172,7 @@
         const REFRESH_INTERVAL = 15000;
 
         async function autoRefreshOrders() {
-            if (document.hidden) return; // skip when tab not visible
+            if (document.hidden) return;
 
             try {
                 const res = await fetch(window.location.href, {
@@ -185,29 +184,22 @@
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
 
-                // Replace kanban board content
                 const newBoard = doc.querySelector('.grid.grid-cols-1.md\\:grid-cols-2');
                 const oldBoard = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2');
                 if (newBoard && oldBoard) {
                     oldBoard.innerHTML = newBoard.innerHTML;
-                    // Re-attach timer updates
                     updateTimers();
                 }
 
-                // Check for new orders and notify
-                const newCountEls = doc.querySelectorAll('[data-step]');
-                // Simple: count all order cards in the new HTML
                 const newCards = doc.querySelectorAll('.ui-card-flat[onclick]');
                 if (newCards.length > lastOrderCount) {
                     const diff = newCards.length - lastOrderCount;
-                    // Show browser notification
                     if (Notification.permission === 'granted') {
                         new Notification('🔔 Pesanan Baru!', {
                             body: `${diff} pesanan baru masuk`,
                             icon: '/assets/brand/logo.png'
                         });
                     }
-                    // Play notification sound
                     try {
                         @php
                             $customPath = public_path('custom_notification.mp3');
@@ -229,10 +221,8 @@
 
         setInterval(autoRefreshOrders, REFRESH_INTERVAL);
 
-        // Request notification permission
         if ('Notification' in window && Notification.permission === 'default') {
             Notification.requestPermission();
         }
     </script>
 </x-admin-layout>
-

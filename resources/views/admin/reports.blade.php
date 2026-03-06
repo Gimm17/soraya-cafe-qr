@@ -1,15 +1,17 @@
-<x-admin-layout title="Reports">
-  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+<x-admin-layout title="Laporan">
+  <div class="admin-page-header flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
     <div>
-      <p class="text-sm text-muted">Grafik penjualan (PAID) berdasarkan range.</p>
+      <h1>Sales Reports</h1>
+      <p>Kelola laporan penjualan Soraya Coffee.</p>
     </div>
     <div class="flex gap-2">
-      <a class="tap-44 px-4 py-2 rounded-xl border border-line font-semibold {{ $range==='7d' ? 'bg-gray-900 text-white' : 'bg-white text-gray-800 hover:bg-gray-50' }}" href="{{ route('admin.reports', ['range'=>'7d']) }}">7d</a>
-      <a class="tap-44 px-4 py-2 rounded-xl border border-line font-semibold {{ $range==='30d' ? 'bg-gray-900 text-white' : 'bg-white text-gray-800 hover:bg-gray-50' }}" href="{{ route('admin.reports', ['range'=>'30d']) }}">30d</a>
+      <a class="tap-44 px-5 py-2.5 rounded-xl font-semibold text-sm {{ $range==='7d' ? 'btn-primary' : 'btn-secondary' }}" href="{{ route('admin.reports', ['range'=>'7d']) }}">7d</a>
+      <a class="tap-44 px-5 py-2.5 rounded-xl font-semibold text-sm {{ $range==='30d' ? 'btn-primary' : 'btn-secondary' }}" href="{{ route('admin.reports', ['range'=>'30d']) }}">30d</a>
     </div>
   </div>
 
-  <div class="ui-card p-5">
+  <div class="section-card p-6">
+    <p class="font-bold text-gray-900 mb-4">Grafik Penjualan (PAID)</p>
     <canvas id="chart" height="120"></canvas>
     <p class="text-xs text-muted mt-3">Sumber: transaksi order berstatus PAID.</p>
   </div>

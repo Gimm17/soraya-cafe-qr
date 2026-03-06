@@ -1,10 +1,11 @@
 <x-admin-layout title="Produk">
-    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+    <div class="admin-page-header flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div>
-            <p class="text-sm text-muted">Kelola menu produk cafe (aktif, habis, best seller).</p>
+            <h1>Produk</h1>
+            <p>Kelola menu produk cafe (aktif, habis, best seller).</p>
         </div>
-        <a href="{{ route('admin.products.create') }}" class="inline-flex items-center justify-center gap-2 tap-44 px-5 py-3 bg-primary-600 text-white ui-btn hover:bg-primary-700 transition-colors font-semibold shadow-soft">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        <a href="{{ route('admin.products.create') }}" class="btn-primary tap-44 shadow-soft">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             Tambah Produk
         </a>
     </div>
@@ -43,7 +44,7 @@
                         <h3 class="font-semibold text-gray-900 truncate">{{ $product->name }}</h3>
                         <p class="text-xs text-muted">{{ $product->category->name ?? 'Tanpa Kategori' }}</p>
                     </div>
-                    <span class="text-primary-700 font-extrabold text-sm whitespace-nowrap">{{ $product->price_rupiah }}</span>
+                    <span class="text-[#1E3A8A] font-extrabold text-sm whitespace-nowrap">{{ $product->price_rupiah }}</span>
                 </div>
 
                 <div class="flex gap-2 mt-4">
