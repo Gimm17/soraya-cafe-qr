@@ -64,6 +64,13 @@ Route::prefix('admin')->group(function () {
         Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback');
         Route::post('/feedback/{feedback}/toggle', [AdminFeedbackController::class, 'toggle'])->name('admin.feedback.toggle');
 
+        // POS / Kasir
+        Route::get('/pos', [\App\Http\Controllers\Admin\AdminPosController::class, 'index'])->name('admin.pos');
+        Route::get('/pos/products', [\App\Http\Controllers\Admin\AdminPosController::class, 'products'])->name('admin.pos.products');
+        Route::post('/pos/order', [\App\Http\Controllers\Admin\AdminPosController::class, 'store'])->name('admin.pos.order');
+        Route::post('/pos/confirm-qris/{order}', [\App\Http\Controllers\Admin\AdminPosController::class, 'confirmQris'])->name('admin.pos.confirm-qris');
+        Route::get('/pos/check-payment/{order}', [\App\Http\Controllers\Admin\AdminPosController::class, 'checkPayment'])->name('admin.pos.check-payment');
+
         // Reports
         Route::get('/reports', [AdminReportController::class, 'index'])->name('admin.reports');
 
@@ -73,6 +80,7 @@ Route::prefix('admin')->group(function () {
         Route::post('/settings/close-order', [\App\Http\Controllers\Admin\AdminSettingController::class, 'updateCloseOrder'])->name('admin.settings.close-order');
         Route::post('/settings/toggle-cafe', [\App\Http\Controllers\Admin\AdminSettingController::class, 'toggleCafe'])->name('admin.settings.toggle-cafe');
         Route::post('/settings/receipt', [\App\Http\Controllers\Admin\AdminSettingController::class, 'updateReceipt'])->name('admin.settings.receipt');
+        Route::post('/settings/pos', [\App\Http\Controllers\Admin\AdminSettingController::class, 'updatePos'])->name('admin.settings.pos');
 
         // Banners
         Route::get('/banners', [\App\Http\Controllers\Admin\AdminBannerController::class, 'index'])->name('admin.banners');

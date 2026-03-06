@@ -68,6 +68,12 @@ class AdminSettingController extends Controller
             'receiptFooterText'     => Setting::getValue('receipt_footer_text', 'Terima kasih! 🙏'),
             'receiptFooterSecondary'=> Setting::getValue('receipt_footer_secondary'),
             'receiptFooterFontSize' => Setting::getValue('receipt_footer_font_size', '14'),
+
+            // ── POS / Kasir settings ──
+            'posCashChangeEnabled'  => Setting::getValue('pos_cash_change_enabled', '1'),
+            'posAudioEnabled'       => Setting::getValue('pos_audio_enabled', '1'),
+            'posQrisMode'           => Setting::getValue('pos_qris_mode', 'external'),
+            'posQrisImage'          => Setting::getValue('pos_qris_image'),
         ]);
     }
 
@@ -193,5 +199,29 @@ class AdminSettingController extends Controller
 
         $statusText = $currentStatus ? 'DITUTUP' : 'DIBUKA';
         return back()->with('success', "Cafe berhasil {$statusText}!");
+    }
+
+    /**
+     * Save POS / Kasir settings.
+     */
+    public function updatePos(Request $request)
+    {
+        Setting::setValue('pos_cash_change_enabled', $request->input('pos_cash_change_enabled', '0'));
+        Setting::setValue('pos_audio_enabled', $request->input('pos_audio_enabled', '0'));
+        Setting::setValue('pos_qris_mode', $request->input('pos_qris_mode', 'external'));
+
+        // Handle QRIS image upload
+        if ($request->hasFile('pos_qris_image')) {
+            $request->validate([
+                'pos_qris_image' => 'image|mimes:png,jpg,jpeg,webp|max:2048',
+            ]);
+
+            $file = $request->file('pos_qris_image');
+            $filename = 'qris_static.' . $file->getClientOriginalExtension();
+            $file->move(public_path('assets/pos'), $filename);
+            Setting::setValue('pos_qris_image', 'assets/pos/' . $filename);
+        }
+
+        return back()->with('success', 'Pengaturan Kasir berhasil disimpan.');
     }
 }

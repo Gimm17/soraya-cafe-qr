@@ -222,7 +222,29 @@
     @if(($receiptShowPayment ?? '1') === '1')
     <div style="margin:0 24px;padding:10px 0;border-top:{{ $borderThinCss }};display:flex;justify-content:space-between;align-items:center;">
         <span style="font-size:12px;color:{{ $textSub }};">Metode Pembayaran</span>
-        <span style="font-size:{{ $bodyPx }}px;font-weight:600;color:{{ $textMain }};">💳 {{ $paymentMethod }}</span>
+        <span style="font-size:{{ $bodyPx }}px;font-weight:600;color:{{ $textMain }};">
+            @if(($order->payment->gateway ?? '') === 'CASH')
+                💵 Tunai
+            @elseif(($order->payment->gateway ?? '') === 'QRIS')
+                📱 QRIS
+            @else
+                💳 {{ $paymentMethod }}
+            @endif
+        </span>
+    </div>
+    @endif
+
+    <!-- Cash Received & Change (POS cash orders only) -->
+    @if(($order->payment->gateway ?? '') === 'CASH' && $order->payment->cash_received)
+    <div style="margin:0 24px;padding:8px 0;border-top:1px solid {{ $borderColor }};">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:{{ $bodyPx }}px;color:{{ $textSub }};">Uang Diterima</span>
+            <span style="font-size:{{ $bodyPx }}px;font-weight:600;color:{{ $textMain }};">Rp {{ number_format($order->payment->cash_received, 0, ',', '.') }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;">
+            <span style="font-size:{{ $bodyPx }}px;color:{{ $textSub }};">Kembalian</span>
+            <span style="font-size:{{ $bodyPx }}px;font-weight:700;color:#059669;">Rp {{ number_format($order->payment->cash_change ?? 0, 0, ',', '.') }}</span>
+        </div>
     </div>
     @endif
 

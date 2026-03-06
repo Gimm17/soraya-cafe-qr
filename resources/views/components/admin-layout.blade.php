@@ -62,6 +62,10 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                     Orders
                 </a>
+                <a href="{{ route('admin.pos') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('admin.pos*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    Kasir
+                </a>
                 <a href="{{ route('admin.products') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('admin.products*') ? 'active' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                     Produk
@@ -149,6 +153,7 @@
                 <nav class="p-3 space-y-0.5">
                     <a href="{{ route('admin.dashboard') }}" class="sidebar-link block px-4 py-3 rounded-xl {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
                     <a href="{{ route('admin.orders') }}" class="sidebar-link block px-4 py-3 rounded-xl {{ request()->routeIs('admin.orders*') ? 'active' : '' }}">Orders</a>
+                    <a href="{{ route('admin.pos') }}" class="sidebar-link block px-4 py-3 rounded-xl {{ request()->routeIs('admin.pos*') ? 'active' : '' }}">Kasir</a>
                     <a href="{{ route('admin.products') }}" class="sidebar-link block px-4 py-3 rounded-xl {{ request()->routeIs('admin.products*') ? 'active' : '' }}">Produk</a>
                     <a href="{{ route('admin.categories') }}" class="sidebar-link block px-4 py-3 rounded-xl {{ request()->routeIs('admin.categories*') ? 'active' : '' }}">Kategori</a>
                     <a href="{{ route('admin.modifiers') }}" class="sidebar-link block px-4 py-3 rounded-xl {{ request()->routeIs('admin.modifiers*') ? 'active' : '' }}">Modifiers</a>

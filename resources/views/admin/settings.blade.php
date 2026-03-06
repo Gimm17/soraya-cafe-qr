@@ -410,6 +410,78 @@
                 </div>
             </form>
         </div>
+
+        {{-- POS / Kasir Settings --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:col-span-2">
+            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                🖥️ Pengaturan Kasir (POS)
+            </h2>
+
+            <form action="{{ route('admin.settings.pos') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                @csrf
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {{-- Toggle Cash Change --}}
+                    <div class="p-4 rounded-xl border border-gray-100">
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <div>
+                                <p class="text-sm font-bold text-gray-800">💵 Kolom Uang Tunai</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Tampilkan input uang diterima & kembalian</p>
+                            </div>
+                            <input type="hidden" name="pos_cash_change_enabled" value="0">
+                            <input type="checkbox" name="pos_cash_change_enabled" value="1" {{ ($posCashChangeEnabled ?? '1') === '1' ? 'checked' : '' }}
+                                class="w-5 h-5 accent-[#1E3A8A] rounded">
+                        </label>
+                    </div>
+
+                    {{-- Toggle Audio --}}
+                    <div class="p-4 rounded-xl border border-gray-100">
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <div>
+                                <p class="text-sm font-bold text-gray-800">🔊 Audio Notifikasi</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Bacakan nominal saat pembayaran QRIS</p>
+                            </div>
+                            <input type="hidden" name="pos_audio_enabled" value="0">
+                            <input type="checkbox" name="pos_audio_enabled" value="1" {{ ($posAudioEnabled ?? '1') === '1' ? 'checked' : '' }}
+                                class="w-5 h-5 accent-[#1E3A8A] rounded">
+                        </label>
+                    </div>
+
+                    {{-- QRIS Mode --}}
+                    <div class="p-4 rounded-xl border border-gray-100">
+                        <p class="text-sm font-bold text-gray-800 mb-2">📱 Mode QRIS</p>
+                        <select name="pos_qris_mode" class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                            <option value="external" {{ ($posQrisMode ?? 'external') === 'external' ? 'selected' : '' }}>QRIS Eksternal (upload gambar)</option>
+                            <option value="midtrans" {{ ($posQrisMode ?? 'external') === 'midtrans' ? 'selected' : '' }}>QRIS Midtrans (auto-confirm)</option>
+                        </select>
+                    </div>
+                </div>
+
+                {{-- QRIS Image Upload --}}
+                <div class="p-4 rounded-xl border border-gray-100">
+                    <p class="text-sm font-bold text-gray-800 mb-2">🖼️ Gambar QRIS Statis</p>
+                    <p class="text-xs text-gray-500 mb-3">Upload gambar QRIS statis untuk ditampilkan di halaman kasir. Format: PNG, JPG, WEBP.</p>
+
+                    @if(!empty($posQrisImage))
+                    <div class="mb-3 flex items-center gap-3">
+                        <img src="{{ asset($posQrisImage) }}" alt="Current QRIS" class="w-32 h-32 object-contain rounded-lg border border-gray-200 p-1 bg-white">
+                        <p class="text-xs text-gray-500">QRIS saat ini</p>
+                    </div>
+                    @endif
+
+                    <input type="file" name="pos_qris_image" accept=".png,.jpg,.jpeg,.webp"
+                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit"
+                        class="px-6 py-3 bg-[#1E3A8A] text-white font-bold rounded-xl hover:bg-[#1a3278] transition-colors shadow-sm">
+                        💾 Simpan Pengaturan Kasir
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </x-admin-layout>
+
 
