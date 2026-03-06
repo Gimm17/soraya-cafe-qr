@@ -69,6 +69,70 @@ class PaymentController extends Controller
     }
 
     /**
+     * AJAX: Called by client after Snap onSuccess/onPending.
+     * Pull status from Midtrans API and update DB directly (bypasses webhook).
+     */
+    public function verifyPayment(Order $order)
+    {
+        // Already paid, nothing to do
+        if ($order->payment_status === 'PAID') {
+            return response()->json(['status' => 'PAID']);
+        }
+
+        $statusData = $this->midtrans->getStatus($order->order_code);
+
+        if (!$statusData) {
+            return response()->json(['status' => 'unknown', 'message' => 'Cannot reach Midtrans'], 500);
+        }
+
+        $txStatus   = strtolower($statusData['transaction_status'] ?? '');
+        $fraudStatus = strtolower($statusData['fraud_status'] ?? 'accept');
+        $txId        = $statusData['transaction_id'] ?? null;
+
+        $payment = Payment::firstOrCreate(
+            ['order_id' => $order->id],
+            ['gateway' => 'midtrans', 'status' => 'PENDING']
+        );
+
+        if (in_array($txStatus, ['capture', 'settlement'])) {
+            if ($txStatus === 'capture' && $fraudStatus !== 'accept') {
+                return response()->json(['status' => 'challenge']);
+            }
+            $order->update([
+                'payment_status' => 'PAID',
+                'order_status'   => $order->order_status === 'DITERIMA' ? 'DIPROSES' : $order->order_status,
+            ]);
+            $payment->update([
+                'status'         => 'PAID',
+                'gateway_trx_id' => $txId,
+                'raw_response'   => $statusData,
+            ]);
+            Log::info('verifyPayment: marked PAID', ['order' => $order->order_code]);
+            return response()->json(['status' => 'PAID']);
+        }
+
+        if ($txStatus === 'pending') {
+            $order->update(['payment_status' => 'PENDING']);
+            $payment->update(['status' => 'PENDING', 'gateway_trx_id' => $txId]);
+            return response()->json(['status' => 'PENDING']);
+        }
+
+        if (in_array($txStatus, ['deny', 'cancel'])) {
+            $order->update(['payment_status' => 'FAILED']);
+            $payment->update(['status' => 'FAILED']);
+            return response()->json(['status' => 'FAILED']);
+        }
+
+        if ($txStatus === 'expire') {
+            $order->update(['payment_status' => 'EXPIRED']);
+            $payment->update(['status' => 'EXPIRED']);
+            return response()->json(['status' => 'EXPIRED']);
+        }
+
+        return response()->json(['status' => $txStatus]);
+    }
+
+    /**
      * AJAX endpoint: get/refresh Snap token for an order.
      */
     public function getSnapToken(Order $order)

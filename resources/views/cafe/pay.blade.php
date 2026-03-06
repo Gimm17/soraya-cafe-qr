@@ -69,12 +69,33 @@
 
     <script>
         const SNAP_TOKEN = @json($snapToken);
-        const ORDER_URL = @json(route('cafe.order.show', ['order' => $order->order_code]));
+        const ORDER_URL  = @json(route('cafe.order.show', ['order' => $order->order_code]));
+        const VERIFY_URL = @json(route('cafe.pay.verify', ['order' => $order->order_code]));
+        const CSRF_TOKEN = @json(csrf_token());
 
         // Auto-trigger Snap payment popup on load
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(openSnapPayment, 500);
         });
+
+        function verifyAndRedirect(delay = 500) {
+            fetch(VERIFY_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF_TOKEN,
+                    'Accept': 'application/json',
+                },
+            })
+            .then(res => res.json())
+            .then(data => {
+                setTimeout(() => window.location.href = ORDER_URL, delay);
+            })
+            .catch(() => {
+                // If verify fails, still redirect
+                setTimeout(() => window.location.href = ORDER_URL, delay);
+            });
+        }
 
         function openSnapPayment() {
             document.getElementById('paymentLoading').classList.add('hidden');
@@ -83,12 +104,12 @@
 
             window.snap.pay(SNAP_TOKEN, {
                 onSuccess: function(result) {
-                    showStatus('success', 'Pembayaran Berhasil! ✅');
-                    setTimeout(() => window.location.href = ORDER_URL, 1500);
+                    showStatus('success', 'Pembayaran Berhasil! Memverifikasi... ✅');
+                    verifyAndRedirect();
                 },
                 onPending: function(result) {
-                    showStatus('pending', 'Menunggu pembayaran...');
-                    setTimeout(() => window.location.href = ORDER_URL, 2000);
+                    showStatus('pending', 'Menunggu konfirmasi pembayaran...');
+                    verifyAndRedirect(2000);
                 },
                 onError: function(result) {
                     showStatus('error', 'Pembayaran gagal. Silakan coba lagi.');
