@@ -279,6 +279,45 @@
                 if (result.isConfirmed) document.getElementById(formId).submit();
             });
         }
+
+        function confirmToggleCafe(formId, isCurrentlyOpen) {
+            const action = isCurrentlyOpen ? 'Tutup' : 'Buka';
+            const text   = isCurrentlyOpen
+                ? 'Pelanggan tidak bisa memesan saat cafe ditutup.'
+                : 'Pelanggan akan bisa memesan kembali.';
+            confirmAction({
+                title: action + ' Cafe Sekarang?',
+                text: text,
+                icon: isCurrentlyOpen ? 'warning' : 'question',
+                confirmText: 'Ya, ' + action.toLowerCase() + ' cafe'
+            }).then((result) => {
+                if (result.isConfirmed) document.getElementById(formId).submit();
+            });
+        }
+
+        function confirmToggleBanner(formId, isActive) {
+            const action = isActive ? 'Nonaktifkan' : 'Aktifkan';
+            confirmAction({
+                title: action + ' Banner Ini?',
+                text: isActive ? 'Banner tidak akan muncul di homepage.' : 'Banner akan ditampilkan di homepage.',
+                icon: 'question',
+                confirmText: 'Ya, ' + action.toLowerCase()
+            }).then((result) => {
+                if (result.isConfirmed) document.getElementById(formId).submit();
+            });
+        }
+
+        function confirmToggleFeedback(formId, isVisible) {
+            const action = isVisible ? 'Sembunyikan' : 'Tampilkan';
+            confirmAction({
+                title: action + ' Review Ini?',
+                text: isVisible ? 'Review tidak akan muncul di halaman pelanggan.' : 'Review akan ditampilkan ke pelanggan.',
+                icon: 'question',
+                confirmText: 'Ya, ' + action.toLowerCase()
+            }).then((result) => {
+                if (result.isConfirmed) document.getElementById(formId).submit();
+            });
+        }
     </script>
 
     {{ $scripts ?? '' }}

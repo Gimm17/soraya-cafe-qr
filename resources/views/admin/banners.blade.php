@@ -78,9 +78,12 @@
 
                         {{-- Overlay Actions --}}
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                            <form action="{{ route('admin.banners.toggle', $banner) }}" method="POST">
+                            <form action="{{ route('admin.banners.toggle', $banner) }}" method="POST"
+                                id="toggle-banner-{{ $banner->id }}">
                                 @csrf
-                                <button type="submit" title="{{ $banner->is_active ? 'Nonaktifkan' : 'Aktifkan' }}"
+                                <button type="button"
+                                    onclick="confirmToggleBanner('toggle-banner-{{ $banner->id }}', {{ $banner->is_active ? 'true' : 'false' }})"
+                                    title="{{ $banner->is_active ? 'Nonaktifkan' : 'Aktifkan' }}"
                                     class="w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-lg shadow transition-all">
                                     {{ $banner->is_active ? '👁️' : '🚫' }}
                                 </button>

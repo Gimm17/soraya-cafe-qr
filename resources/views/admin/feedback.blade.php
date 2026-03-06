@@ -45,9 +45,12 @@
                             </span>
                         </td>
                         <td class="py-3 px-5 text-right">
-                            <form method="POST" action="{{ route('admin.feedback.toggle', $f) }}" class="inline">
+                            <form method="POST" action="{{ route('admin.feedback.toggle', $f) }}" class="inline"
+                                id="toggle-feedback-{{ $f->id }}">
                                 @csrf
-                                <button class="px-4 py-2 rounded-xl border border-line bg-white hover:bg-gray-50 text-sm font-semibold">
+                                <button type="button"
+                                    onclick="confirmToggleFeedback('toggle-feedback-{{ $f->id }}', {{ $f->status === 'VISIBLE' ? 'true' : 'false' }})"
+                                    class="px-4 py-2 rounded-xl border border-line bg-white hover:bg-gray-50 text-sm font-semibold">
                                     {{ $f->status === 'VISIBLE' ? 'Hide' : 'Show' }}
                                 </button>
                             </form>
@@ -79,9 +82,12 @@
                             </svg>
                         @endfor
                     </div>
-                    <form method="POST" action="{{ route('admin.feedback.toggle', $f) }}" class="inline">
+                    <form method="POST" action="{{ route('admin.feedback.toggle', $f) }}" class="inline"
+                        id="toggle-feedback-m-{{ $f->id }}">
                         @csrf
-                        <button class="tap-44 px-4 py-2 rounded-xl border border-line bg-white hover:bg-gray-50 text-sm font-semibold">
+                        <button type="button"
+                            onclick="confirmToggleFeedback('toggle-feedback-m-{{ $f->id }}', {{ $f->status === 'VISIBLE' ? 'true' : 'false' }})"
+                            class="tap-44 px-4 py-2 rounded-xl border border-line bg-white hover:bg-gray-50 text-sm font-semibold">
                             {{ $f->status === 'VISIBLE' ? 'Hide' : 'Show' }}
                         </button>
                     </form>

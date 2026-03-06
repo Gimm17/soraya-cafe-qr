@@ -16,11 +16,11 @@
                     <p class="text-xs text-muted">{{ $cafeIsOpen ? 'Pelanggan bisa memesan saat ini' : 'Semua pesanan diblokir' }}</p>
                 </div>
         </div>
-        <form method="POST" action="{{ route('admin.settings.toggle-cafe') }}">
+        <form method="POST" action="{{ route('admin.settings.toggle-cafe') }}" id="toggle-cafe-form-dash">
             @csrf
-            <button type="submit"
+            <button type="button"
                 class="tap-44 px-6 py-2.5 rounded-xl font-bold text-sm transition-colors {{ $cafeIsOpen ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white' }}"
-                onclick="return confirm('{{ $cafeIsOpen ? 'Tutup cafe sekarang?' : 'Buka cafe sekarang?' }}')">  
+                onclick="confirmToggleCafe('toggle-cafe-form-dash', {{ $cafeIsOpen ? 'true' : 'false' }})">
                 {{ $cafeIsOpen ? '🔒 Tutup Cafe' : '🔓 Buka Cafe' }}
             </button>
         </form>

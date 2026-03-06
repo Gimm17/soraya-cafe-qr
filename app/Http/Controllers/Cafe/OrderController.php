@@ -41,7 +41,7 @@ class OrderController extends Controller
         return view('receipt', [
             'order'         => $order,
             'paymentMethod' => $order->payment?->payment_method_label ?? 'Midtrans',
-            'cafeName'      => Setting::getValue('cafe_name', 'Nindito'),
+            'cafeName'      => Setting::getValue('cafe_name', 'Soraya'),
             'cafeTagline'   => Setting::getValue('cafe_tagline', 'Coffee & Friends'),
             'cafeAddress'   => Setting::getValue('cafe_address'),
             'cafeWhatsapp'  => Setting::getValue('cafe_whatsapp'),
