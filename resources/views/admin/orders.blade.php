@@ -167,59 +167,87 @@
         setInterval(updateTimers, 1000);
         updateTimers();
 
-        // ── Auto-refresh: poll every 15 seconds ──
-        let lastOrderCount = {{ $orders->count() }};
-        const REFRESH_INTERVAL = 15000;
+        // ── Lightweight JSON polling with ETag + adaptive backoff ──
+        // Much lighter than fetching full HTML: only ~1-2KB per request.
+        // Server returns 304 Not Modified when nothing changed = near-zero cost.
+        const POLL_URL = "{{ route('admin.orders.poll') }}";
+        let pollEtag = null;
+        let pollBackoff = 5000;       // start: poll every 5s
+        const POLL_MAX_BACKOFF = 15000; // slow down to 15s when idle
+        let lastKnownCount = {{ $orders->count() }};
 
-        async function autoRefreshOrders() {
-            if (document.hidden) return;
+        @php
+            $customPath = public_path('custom_notification.mp3');
+            $soundSrc = file_exists($customPath)
+                ? asset('custom_notification.mp3')
+                : 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbsGckGFqIw+DfuHEoJUyAvN3nxII5MWCE0O/dq1s3OHaV3/DexnlHOm+L0/Hhz5NbR2yFyerhz5leUHGLz/Dlz5tmWXiOz/Dlz5tm';
+        @endphp
 
+        async function pollOrders() {
+            if (document.hidden) {
+                setTimeout(pollOrders, pollBackoff);
+                return;
+            }
             try {
-                const res = await fetch(window.location.href, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
+                const headers = { 'Accept': 'application/json' };
+                if (pollEtag) headers['If-None-Match'] = pollEtag;
+
+                const res = await fetch(POLL_URL, { headers });
+
+                if (res.status === 304) {
+                    // Nothing changed — slow down polling
+                    pollBackoff = Math.min(POLL_MAX_BACKOFF, pollBackoff + 1000);
+                } else if (res.ok) {
+                    pollEtag = res.headers.get('ETag');
+                    const orders = await res.json();
+                    pollBackoff = 5000; // reset to fast polling on change
+
+                    const newCount = orders.filter(o => o.order_status === 'DITERIMA').length;
+
+                    if (newCount > lastKnownCount) {
+                        const diff = newCount - lastKnownCount;
+                        // 🔔 Browser notification
+                        if (Notification.permission === 'granted') {
+                            new Notification('🔔 Pesanan Baru!', {
+                                body: `${diff} pesanan baru masuk`,
+                                icon: '/assets/brand/logo.png'
+                            });
+                        }
+                        // 🔊 Sound
+                        try {
+                            const audio = new Audio("{!! $soundSrc !!}");
+                            audio.volume = 0.5;
+                            audio.play().catch(() => {});
+                        } catch(e) {}
+                    }
+
+                    // Reload kanban if anything changed
+                    lastKnownCount = newCount;
+                    reloadKanban();
+                }
+            } catch (e) {
+                pollBackoff = Math.min(POLL_MAX_BACKOFF, pollBackoff + 2000);
+            }
+            setTimeout(pollOrders, pollBackoff);
+        }
+
+        async function reloadKanban() {
+            try {
+                const res = await fetch(window.location.href);
                 if (!res.ok) return;
-
                 const html = await res.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-
+                const doc = new DOMParser().parseFromString(html, 'text/html');
                 const newBoard = doc.querySelector('.grid.grid-cols-1.md\\:grid-cols-2');
                 const oldBoard = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2');
                 if (newBoard && oldBoard) {
                     oldBoard.innerHTML = newBoard.innerHTML;
                     updateTimers();
                 }
-
-                const newCards = doc.querySelectorAll('.ui-card-flat[onclick]');
-                if (newCards.length > lastOrderCount) {
-                    const diff = newCards.length - lastOrderCount;
-                    if (Notification.permission === 'granted') {
-                        new Notification('🔔 Pesanan Baru!', {
-                            body: `${diff} pesanan baru masuk`,
-                            icon: '/assets/brand/logo.png'
-                        });
-                    }
-                    try {
-                        @php
-                            $customPath = public_path('custom_notification.mp3');
-                            $soundSrc = file_exists($customPath)
-                                ? asset('custom_notification.mp3')
-                                : 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbsGckGFqIw+DfuHEoJUyAvN3nxII5MWCE0O/dq1s3OHaV3/DexnlHOm+L0/Hhz5NbR2yFyerhz5leUHGLz/Dlz5tmWXiOz/Dlz5tm';
-                        @endphp
-                        const audio = new Audio("{!! $soundSrc !!}");
-                        audio.volume = 0.5;
-                        audio.play().catch(e => console.log('Audio play failed:', e));
-                    } catch(e) {}
-                }
-                lastOrderCount = newCards.length;
-
-            } catch (e) {
-                console.warn('Auto-refresh failed:', e);
-            }
+            } catch(e) {}
         }
 
-        setInterval(autoRefreshOrders, REFRESH_INTERVAL);
+        // Start polling
+        pollOrders();
 
         if ('Notification' in window && Notification.permission === 'default') {
             Notification.requestPermission();

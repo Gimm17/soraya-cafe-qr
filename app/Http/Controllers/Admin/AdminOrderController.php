@@ -37,6 +37,41 @@ class AdminOrderController extends Controller
         ]);
     }
 
+    /**
+     * Lightweight JSON endpoint for polling — returns minimal order data.
+     * Used by admin orders page JS to detect new/changed orders.
+     */
+    public function ordersJson(Request $request)
+    {
+        $orders = Order::with('table')
+            ->where('created_at', '>=', now()->subDays(7))
+            ->whereNotIn('order_status', ['SELESAI'])
+            ->orderByDesc('created_at')
+            ->get(['id', 'order_code', 'order_status', 'payment_status', 'customer_name', 'total', 'created_at', 'table_id']);
+
+        // Build lightweight payload
+        $payload = $orders->map(fn($o) => [
+            'id'             => $o->id,
+            'order_code'     => $o->order_code,
+            'order_status'   => $o->order_status,
+            'payment_status' => $o->payment_status,
+            'customer_name'  => $o->customer_name,
+            'total'          => $o->total,
+            'table'          => $o->table?->name,
+            'created_at'     => $o->created_at->diffForHumans(),
+        ]);
+
+        // ETag based on content hash — 304 Not Modified if nothing changed
+        $etag = '"' . md5($payload->toJson()) . '"';
+        if (request()->header('If-None-Match') === $etag) {
+            return response('', 304)->header('ETag', $etag);
+        }
+
+        return response()->json($payload)
+            ->header('ETag', $etag)
+            ->header('Cache-Control', 'no-cache');
+    }
+
     public function show(Order $order)
     {
         $order->load(['items.mods', 'table', 'payment', 'feedback']);
