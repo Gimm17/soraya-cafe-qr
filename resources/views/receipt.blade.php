@@ -5,210 +5,255 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Struk {{ $order->order_code }}</title>
     <style>
-        /* ── Reset & Base ────────────────────────────────── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
+            background: #f0f4ff;
             color: #1a1a1a;
             line-height: 1.5;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
 
-        /* ── Receipt Container ───────────────────────────── */
+        /* ── Receipt wrapper ── */
         .receipt {
-            max-width: 420px;
-            margin: 24px auto;
+            max-width: 400px;
+            margin: 20px auto;
             background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 2px 16px rgba(0,0,0,.08);
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(30,58,138,.12);
             overflow: hidden;
         }
 
-        /* ── Header ──────────────────────────────────────── */
-        .receipt-header {
+        /* ── Header ── */
+        .rh {
             text-align: center;
-            padding: 28px 24px 20px;
-            border-bottom: 2px dashed #e5e5e5;
+            padding: 24px 24px 18px;
         }
-        .receipt-logo {
-            width: 64px;
-            height: 64px;
-            object-fit: contain;
-            margin: 0 auto 10px;
-            display: block;
-            border-radius: 8px;
-        }
-        .receipt-header .cafe-name {
-            font-size: 20px;
+        .rh-logo {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: #1E3A8A;
+            color: #fff;
+            font-size: 22px;
             font-weight: 800;
-            letter-spacing: -0.5px;
-            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
         }
-        .receipt-header .cafe-tagline {
-            font-size: 12px;
-            color: #888;
+        .rh-logo img {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .rh-name {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: .5px;
+            color: #1E3A8A;
+            text-transform: uppercase;
+        }
+        .rh-tagline {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #94a3b8;
             margin-top: 2px;
         }
-        .receipt-header .order-code {
-            font-size: 16px;
-            font-weight: 700;
-            margin-top: 14px;
-            color: #333;
-            letter-spacing: 0.5px;
-        }
-        .receipt-header .order-date {
-            font-size: 12px;
-            color: #888;
-            margin-top: 4px;
-        }
 
-        /* ── Info Grid ───────────────────────────────────── */
-        .receipt-info {
-            padding: 16px 24px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            border-bottom: 1px solid #f0f0f0;
+        /* ── Meta rows ── */
+        .rmeta {
+            padding: 12px 22px;
+            border-top: 1px solid #f1f5f9;
         }
-        .receipt-info .info-item {
-            font-size: 12px;
-        }
-        .receipt-info .info-label {
-            color: #888;
-            font-size: 11px;
-        }
-        .receipt-info .info-value {
-            font-weight: 600;
-            color: #333;
-        }
-
-        /* ── Status Section ──────────────────────────────── */
-        .receipt-status {
-            padding: 14px 24px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            border-bottom: 2px dashed #e5e5e5;
-        }
-        .status-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        .chip-success {
-            background: #ecfdf5;
-            color: #065f46;
-        }
-        .chip-paid {
-            background: #eff6ff;
-            color: #1e40af;
-        }
-        .chip-method {
-            background: #faf5ff;
-            color: #6b21a8;
-        }
-
-        /* ── Items Table ─────────────────────────────────── */
-        .receipt-items {
-            padding: 0 24px;
-        }
-        .receipt-items .items-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 16px 0 10px;
-        }
-        .item-row {
-            padding: 10px 0;
-            border-bottom: 1px solid #f5f5f5;
-        }
-        .item-row:last-child {
-            border-bottom: none;
-        }
-        .item-main {
+        .rmeta-row {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
+            align-items: baseline;
+            padding: 4px 0;
         }
-        .item-name {
-            font-size: 13px;
+        .rmeta-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            color: #94a3b8;
+        }
+        .rmeta-val {
+            font-size: 12px;
             font-weight: 600;
-            color: #1a1a1a;
-        }
-        .item-mods {
-            font-size: 11px;
-            color: #888;
-            margin-top: 2px;
-        }
-        .item-note {
-            font-size: 11px;
-            color: #b45309;
-            margin-top: 2px;
-        }
-        .item-price-col {
+            color: #334155;
             text-align: right;
+        }
+
+        /* ── Items section ── */
+        .ri {
+            padding: 0 22px;
+            border-top: 1px solid #f1f5f9;
+        }
+        .ri-title {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: #94a3b8;
+            padding: 12px 0 8px;
+        }
+        .ri-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f8fafc;
+        }
+        .ri-row:last-child { border-bottom: none; }
+        .ri-qty {
+            min-width: 24px;
+            height: 22px;
+            background: #1E3A8A;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
             flex-shrink: 0;
         }
-        .item-qty {
-            font-size: 11px;
-            color: #888;
-        }
-        .item-subtotal {
+        .ri-info { flex: 1; }
+        .ri-name {
             font-size: 13px;
             font-weight: 600;
-            color: #333;
+            color: #1e293b;
+        }
+        .ri-mods {
+            font-size: 10px;
+            color: #94a3b8;
+            font-style: italic;
+            margin-top: 1px;
+        }
+        .ri-note {
+            font-size: 10px;
+            color: #b45309;
+            margin-top: 1px;
+        }
+        .ri-price {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            text-align: right;
+            white-space: nowrap;
         }
 
-        /* ── Total ───────────────────────────────────────── */
-        .receipt-total {
-            margin: 0 24px;
-            padding: 16px 0;
-            border-top: 2px dashed #e5e5e5;
+        /* ── Dashed separator ── */
+        .dashed {
+            border: none;
+            border-top: 2px dashed #cbd5e1;
+            margin: 4px 22px;
+        }
+
+        /* ── Totals ── */
+        .rtotal {
+            padding: 10px 22px;
+        }
+        .rtotal-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #64748b;
+            padding: 3px 0;
+        }
+        .rtotal-grand {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 8px 0 4px;
+            border-top: 1px solid #f1f5f9;
+            margin-top: 4px;
         }
-        .total-label {
+        .rtotal-grand-label {
             font-size: 14px;
             font-weight: 700;
-            color: #1a1a1a;
+            color: #1e293b;
         }
-        .total-amount {
-            font-size: 20px;
+        .rtotal-grand-amount {
+            font-size: 18px;
             font-weight: 800;
-            color: #1a1a1a;
+            color: #1E3A8A;
         }
 
-        /* ── Footer ──────────────────────────────────────── */
-        .receipt-footer {
+        /* ── Payment pill ── */
+        .rpay {
             text-align: center;
-            padding: 20px 24px 28px;
-            border-top: 1px solid #f0f0f0;
+            padding: 6px 22px 14px;
         }
-        .receipt-footer .thankyou {
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
+        .rpay-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: #475569;
         }
-        .receipt-footer .footer-info {
-            font-size: 11px;
-            color: #aaa;
-            margin-top: 6px;
+        .rpay-dot {
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            border: 2px solid #22c55e;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .rpay-dot::after {
+            content: '';
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
         }
 
-        /* ── Buttons (screen only) ───────────────────────── */
+        /* ── Blue footer ── */
+        .rf {
+            background: #1E3A8A;
+            text-align: center;
+            padding: 18px 22px;
+            margin-top: 2px;
+        }
+        .rf-icon {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+        .rf-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .rf-sub {
+            font-size: 11px;
+            color: #93c5fd;
+            margin-top: 3px;
+        }
+        .rf-divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,.15);
+            margin: 12px 0 10px;
+        }
+        .rf-foot {
+            font-size: 10px;
+            letter-spacing: .5px;
+            color: #60a5fa;
+            text-transform: uppercase;
+        }
+
+        /* ── Action buttons (screen only) ── */
         .receipt-actions {
-            max-width: 420px;
-            margin: 0 auto 32px;
+            max-width: 400px;
+            margin: 0 auto 24px;
             padding: 0 16px;
             display: flex;
             gap: 10px;
@@ -219,170 +264,138 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 12px 20px;
+            padding: 11px 16px;
             border-radius: 12px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
             border: none;
-            transition: all .15s;
         }
-        .btn-primary {
-            background: #4f46e5;
-            color: #fff;
-        }
-        .btn-primary:hover { background: #4338ca; }
-        .btn-outline {
-            background: #fff;
-            color: #555;
-            border: 1px solid #ddd;
-        }
-        .btn-outline:hover { background: #f9f9f9; }
+        .btn-primary { background: #1E3A8A; color: #fff; }
+        .btn-outline { background: #fff; color: #555; border: 1px solid #ddd; }
 
-        /* ── Print Styles ────────────────────────────────── */
         @media print {
-            body {
-                background: #fff;
-                margin: 0;
-                padding: 0;
-            }
-            .receipt {
-                max-width: 100%;
-                margin: 0;
-                border-radius: 0;
-                box-shadow: none;
-            }
-            .receipt-actions {
-                display: none !important;
-            }
-
-            /* ── Thermal 80mm support ── */
-            @page {
-                margin: 6mm;
-            }
+            body { background: #fff; }
+            .receipt { max-width: 100%; margin: 0; border-radius: 0; box-shadow: none; }
+            .receipt-actions { display: none !important; }
+            @page { margin: 6mm; }
         }
-
-        /* ── Thermal 80mm media query ────────────────────── */
         @media print and (max-width: 80mm) {
-            .receipt-header .cafe-name { font-size: 16px; }
-            .receipt-header .order-code { font-size: 14px; }
-            .receipt-info { grid-template-columns: 1fr; gap: 6px; }
-            .total-amount { font-size: 16px; }
+            .rh-name { font-size: 15px; }
+            .rtotal-grand-amount { font-size: 15px; }
+            .rmeta-row { flex-direction: column; }
             @page { margin: 3mm; }
         }
-
-        /* ── BW Theme ────────────────────────────────────── */
-        @if(($receiptTheme ?? 'normal') === 'bw')
-        .chip-success,
-        .chip-paid,
-        .chip-method {
-            background: #f5f5f5 !important;
-            color: #333 !important;
-            border: 1px solid #ccc;
-        }
-        .receipt-header .cafe-tagline { color: #555; }
-        .total-amount { color: #000 !important; }
-        .item-note { color: #555 !important; }
-        .receipt-logo { filter: grayscale(1); }
-        @endif
     </style>
 </head>
 <body>
 
 <div class="receipt">
-    <!-- Header -->
-    <div class="receipt-header">
+
+    {{-- ── Header ── --}}
+    <div class="rh">
         @if(($receiptShowLogo ?? '0') === '1' && !empty($receiptLogoUrl))
-            @php $logoSize = intval($receiptLogoSize ?? 64); $logoSpacing = intval($receiptLogoSpacing ?? 10); @endphp
-            <img src="{{ $receiptLogoUrl }}" alt="Logo" class="receipt-logo"
-                 style="width:{{ $logoSize }}px;height:{{ $logoSize }}px;margin-bottom:{{ $logoSpacing }}px;">
+            <div class="rh-logo"><img src="{{ $receiptLogoUrl }}" alt="Logo"></div>
+        @else
+            <div class="rh-logo">{{ strtoupper(substr($cafeName, 0, 1)) }}</div>
         @endif
-        <div class="cafe-name">{{ $cafeName }}</div>
-        <div class="cafe-tagline">{{ $cafeTagline }}</div>
-        <div class="order-code">{{ $order->order_code }}</div>
-        <div class="order-date">{{ $order->created_at->format('d M Y, H:i') }}</div>
+        <div class="rh-name">{{ $cafeName }}</div>
+        <div class="rh-tagline">{{ $cafeTagline }}</div>
     </div>
 
-    <!-- Info -->
-    @if(($receiptShowCustomer ?? '1') === '1')
-    <div class="receipt-info">
-        <div class="info-item">
-            <div class="info-label">Customer</div>
-            <div class="info-value">{{ $order->customer_name }}</div>
+    {{-- ── Meta ── --}}
+    <div class="rmeta">
+        <div class="rmeta-row">
+            <span class="rmeta-label">Order ID</span>
+            <span class="rmeta-val">{{ $order->order_code }}</span>
         </div>
-        <div class="info-item">
-            <div class="info-label">Meja</div>
-            <div class="info-value">{{ $order->table->table_no ?? '-' }}</div>
+        <div class="rmeta-row">
+            <span class="rmeta-label">Date</span>
+            <span class="rmeta-val">{{ $order->created_at->format('d M Y, H:i') }}</span>
         </div>
-        <div class="info-item">
-            <div class="info-label">Tipe</div>
-            <div class="info-value">{{ $order->fulfillment_type === 'DINE_IN' ? 'Dine In' : 'Takeaway' }}</div>
+        <div class="rmeta-row">
+            <span class="rmeta-label">Service</span>
+            <span class="rmeta-val">
+                @if($order->table)Meja {{ $order->table->table_no }} • @endif{{ $order->fulfillment_type === 'DINE_IN' ? 'Dine In' : 'Takeaway' }}
+            </span>
         </div>
-        <div class="info-item">
-            <div class="info-label">Tanggal</div>
-            <div class="info-value">{{ $order->created_at->format('d/m/Y') }}</div>
+        @if(($receiptShowCustomer ?? '1') === '1')
+        <div class="rmeta-row">
+            <span class="rmeta-label">Customer</span>
+            <span class="rmeta-val">{{ $order->customer_name }}</span>
         </div>
+        @endif
     </div>
-    @endif
 
-
-
-    <!-- Items -->
-    <div class="receipt-items">
-        <div class="items-title">Rincian Pesanan</div>
+    {{-- ── Items ── --}}
+    <div class="ri">
+        <div class="ri-title">Order Summary</div>
         @foreach($order->items as $item)
-        <div class="item-row">
-            <div class="item-main">
-                <div>
-                    <div class="item-name">{{ $item->product_name }}</div>
-                    @if($item->mods->isNotEmpty())
-                        <div class="item-mods">{{ $item->mods_summary }}</div>
-                    @endif
-                    @if($item->note)
-                        <div class="item-note">📝 {{ $item->note }}</div>
-                    @endif
-                </div>
-                <div class="item-price-col">
-                    <div class="item-qty">{{ $item->qty }} x Rp {{ number_format($item->unit_price, 0, ',', '.') }}</div>
-                    <div class="item-subtotal">Rp {{ number_format($item->line_total, 0, ',', '.') }}</div>
-                </div>
+        <div class="ri-row">
+            <div class="ri-qty">{{ $item->qty }}x</div>
+            <div class="ri-info">
+                <div class="ri-name">{{ $item->product_name }}</div>
+                @if($item->mods->isNotEmpty())
+                    <div class="ri-mods">{{ $item->mods_summary }}</div>
+                @endif
+                @if($item->note)
+                    <div class="ri-note">📝 {{ $item->note }}</div>
+                @endif
             </div>
+            <div class="ri-price">Rp {{ number_format($item->line_total, 0, ',', '.') }}</div>
         </div>
         @endforeach
     </div>
 
-    <!-- Payment Method -->
+    {{-- ── Separator ── --}}
+    <hr class="dashed">
+
+    {{-- ── Totals ── --}}
+    <div class="rtotal">
+        <div class="rtotal-row">
+            <span>Subtotal</span>
+            <span>Rp {{ number_format($order->total, 0, ',', '.') }}</span>
+        </div>
+        <div class="rtotal-row">
+            <span>Tax (0%)</span>
+            <span>Rp 0</span>
+        </div>
+        <div class="rtotal-grand">
+            <span class="rtotal-grand-label">Grand Total</span>
+            <span class="rtotal-grand-amount">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</span>
+        </div>
+    </div>
+
+    {{-- ── Payment pill ── --}}
     @if(($receiptShowPayment ?? '1') === '1')
-    <div style="margin:0 24px;padding:10px 0;border-top:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;">
-        <span style="font-size:12px;color:#888;">Metode Pembayaran</span>
-        <span style="font-size:13px;font-weight:600;color:#333;">💳 {{ $paymentMethod }}</span>
+    <div class="rpay">
+        <span class="rpay-pill">
+            <span class="rpay-dot"></span>
+            Paid via {{ $paymentMethod }}
+        </span>
     </div>
     @endif
 
-    <!-- Total -->
-    <div class="receipt-total">
-        <span class="total-label">Grand Total</span>
-        <span class="total-amount">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</span>
-    </div>
-
-    <!-- Footer -->
-    <div class="receipt-footer">
-        <div class="thankyou">{{ $receiptFooterText ?? 'Terima kasih! 🙏' }}</div>
-        @php
-            $location = $receiptLocation ?? $cafeAddress ?? null;
-        @endphp
+    {{-- ── Blue footer ── --}}
+    <div class="rf">
+        <div class="rf-icon">☕</div>
+        <div class="rf-title">{{ $receiptFooterText ?? 'Terima kasih sudah berkunjung!' }}</div>
+        <div class="rf-sub">Sampai jumpa lagi di {{ $cafeName }}.</div>
+        @php $location = $receiptLocation ?? $cafeAddress ?? null; @endphp
         @if($location || $cafeWhatsapp)
-        <div class="footer-info">
+        <hr class="rf-divider">
+        <div class="rf-foot">
             @if($location){{ $location }}@endif
             @if($location && $cafeWhatsapp) • @endif
             @if($cafeWhatsapp)WA: {{ $cafeWhatsapp }}@endif
         </div>
         @endif
     </div>
+
 </div>
 
-<!-- Actions (hidden on print) -->
+{{-- Actions (hidden on print) --}}
 <div class="receipt-actions">
     <button class="btn btn-primary" onclick="window.print()">🖨️ Cetak / Save PDF</button>
     <a href="{{ $backUrl }}" class="btn btn-outline">← Kembali</a>
