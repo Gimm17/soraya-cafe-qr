@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Services\Midtrans\MidtransClient;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
-    public function __construct(private MidtransClient $midtrans) {}
+    public function __construct(
+        private MidtransClient $midtrans,
+        private PaymentService $paymentService,
+    ) {}
 
     /**
      * Show the custom in-app payment page with Midtrans Snap.
@@ -70,66 +74,13 @@ class PaymentController extends Controller
 
     /**
      * AJAX: Called by client after Snap onSuccess/onPending.
-     * Pull status from Midtrans API and update DB directly (bypasses webhook).
+     * Uses centralized PaymentService to sync status from Midtrans API.
      */
     public function verifyPayment(Order $order)
     {
-        // Already paid, nothing to do
-        if ($order->payment_status === 'PAID') {
-            return response()->json(['status' => 'PAID']);
-        }
+        $status = $this->paymentService->syncPaymentStatus($order);
 
-        $statusData = $this->midtrans->getStatus($order->order_code);
-
-        if (!$statusData) {
-            return response()->json(['status' => 'unknown', 'message' => 'Cannot reach Midtrans'], 500);
-        }
-
-        $txStatus   = strtolower($statusData['transaction_status'] ?? '');
-        $fraudStatus = strtolower($statusData['fraud_status'] ?? 'accept');
-        $txId        = $statusData['transaction_id'] ?? null;
-
-        $payment = Payment::firstOrCreate(
-            ['order_id' => $order->id],
-            ['gateway' => 'midtrans', 'status' => 'PENDING']
-        );
-
-        if (in_array($txStatus, ['capture', 'settlement'])) {
-            if ($txStatus === 'capture' && $fraudStatus !== 'accept') {
-                return response()->json(['status' => 'challenge']);
-            }
-            $order->update([
-                'payment_status' => 'PAID',
-                'order_status'   => $order->order_status === 'DITERIMA' ? 'DIPROSES' : $order->order_status,
-            ]);
-            $payment->update([
-                'status'         => 'PAID',
-                'gateway_trx_id' => $txId,
-                'raw_response'   => $statusData,
-            ]);
-            Log::info('verifyPayment: marked PAID', ['order' => $order->order_code]);
-            return response()->json(['status' => 'PAID']);
-        }
-
-        if ($txStatus === 'pending') {
-            $order->update(['payment_status' => 'PENDING']);
-            $payment->update(['status' => 'PENDING', 'gateway_trx_id' => $txId]);
-            return response()->json(['status' => 'PENDING']);
-        }
-
-        if (in_array($txStatus, ['deny', 'cancel'])) {
-            $order->update(['payment_status' => 'FAILED']);
-            $payment->update(['status' => 'FAILED']);
-            return response()->json(['status' => 'FAILED']);
-        }
-
-        if ($txStatus === 'expire') {
-            $order->update(['payment_status' => 'EXPIRED']);
-            $payment->update(['status' => 'EXPIRED']);
-            return response()->json(['status' => 'EXPIRED']);
-        }
-
-        return response()->json(['status' => $txStatus]);
+        return response()->json(['status' => $status]);
     }
 
     /**

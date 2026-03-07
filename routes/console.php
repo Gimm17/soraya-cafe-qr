@@ -11,3 +11,7 @@ Artisan::command('inspire', function () {
 // Schedule cleanup for pending orders older than 10 minutes
 // Run every minute
 Schedule::command('orders:cleanup-pending --minutes=10')->everyFiveMinutes();
+
+// Check pending Midtrans payments (fallback when webhook is unavailable)
+// Queries Midtrans API directly for orders still PENDING within 24h
+Schedule::command('payments:check-pending')->everyFiveMinutes();
